@@ -1,2 +1,0 @@
-# shir.menashe
-  Shir Menashe
