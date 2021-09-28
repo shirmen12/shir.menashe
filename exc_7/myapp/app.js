@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true
 app.use(express.static('public'));
 
 // simple route
-app.get('/CV_Home', function(req, res) {
+app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, '/views/CV.html'));
     });
 
