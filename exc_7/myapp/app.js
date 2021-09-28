@@ -1,18 +1,8 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const express = require("express");
 const bodyParser = require("body-parser");
-const sql = require("./DB/db.js");
+const path = require('path')
 const app = express();
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-
+const sql = require("./DB/db.js")
 
 // parse requests of contenttype: application/json
 app.use(bodyParser.json());
@@ -20,38 +10,37 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true
 }));
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+app.use(express.static('public'));
 
 // simple route
 app.get('/CV_Home', function(req, res) {
-  res.sendFile(path.join(__dirname, '/views/CV.html'));
-  });
-  
+    res.sendFile(path.join(__dirname, '/views/CV.html'));
+    });
+
+app.get('/Contact_me', function(req, res) {
+    res.sendFile(path.join(__dirname, '/views/contact_me_form.html'));
+    });    
+
+const CRUD_operations = require("./public/javascripts/CRUD_functions");
+
+// Create new Contact
+app.post('/Contact_me', CRUD_operations.createNewContact); 
+
+// Create a route for getting all contacts
+app.get("/Contacts", function(req, res){
+    sql.query("SELECT * FROM Contacts", (err, mysqlres) => {
+        if (err) {
+        console.log("error: ", err);
+        res.status(400).send({message: "error in getting all contacts: " + err});
+        return;
+        }
+        console.log("got all contacts!");
+        res.send(mysqlres);
+        return;
+    });
+});
+
 // set port, listen for requests
 app.listen(3000, () => {
     console.log("Server is running on port 3000.");
 });
-
-module.exports = app;
