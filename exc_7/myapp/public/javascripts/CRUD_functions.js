@@ -1,5 +1,4 @@
-
-const sql = require("/Users/shirmenash/shir.menashe/exc_7/myapp/DB/db.js");
+const sql = require("../../DB/db.js");
 const createNewContact = function(req,res){
     // Validate request
     if (!req.body) {
